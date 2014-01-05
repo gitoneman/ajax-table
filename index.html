@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ajax-table</title>
+	<link rel="stylesheet" href="css/base.css">
+	<style>
+		
+	</style>
+</head>
+<body>
+	<div id="table" class="m-table">
+		<div class="header"></div>
+		<div class="inner-wrap">
+			<ul class="inner"></ul>
+		</div>
+		<div class="pager">
+			111
+		</div>		
+	</div>
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/table.js"></script>
+	<script src="js/data.js"></script>
+	<script>
+		$(function(){
+			// var a = {
+			// 	"hello":1,
+			// 	"hello2":2
+			// }
+			// console.log($.extend({},a,{"hello":2}));
+
+			$("#table").my_table({
+				"init":true,
+				"formats":{
+					"sex":function(data){
+						if(data == "male"){
+							data = "男";
+						}else{
+							data = "女";
+						}
+						return data ;
+					}
+				},
+				"clickable":true,
+				"clickHandle":function(){
+					console.log(1)
+				},
+				"height":"300px",
+				"overflow":"auto",
+				"rollable":true
+			});
+		});
+		
+		
+	</script>
+</body>
+</html>
