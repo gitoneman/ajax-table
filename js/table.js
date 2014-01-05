@@ -54,22 +54,37 @@
 		data = Data.list;
 		buildList(dom,self,data);		
 	}
+	function getData1(dom,self){
+		var data = {},
+		opts = dom.data("opts");
+		data = Data1.list;
+		buildList(dom,self,data);		
+	}
 	function buildRollList(dom,self,data){
 
 		var timer = null,
-			top;
+			top,
+			length;
 			
 
 		self.css({"position":"absolute"});
-		
+		var lis = self.find("li").clone(true);
+		self.append(lis);
 
 		timer = setInterval(function(){
 			// $.ajax({
 
 			// });
 
-			// top = self.position().top;			
-			// self.animate({"top":top-30});
+												
+			self.animate({"top":self.position().top-30},600,function(){
+				if((self.position().top) == -self.height()/2){
+				// getData1(dom,self);
+					self.css({"top":0});	
+				}
+			});
+			
+			
 		},1000);
 	}
 
@@ -116,6 +131,7 @@
 
 		if(opts.rollable){
 			buildRollList(dom,self,data);
+			opts.rollable = false;
 		}
 	}
 
