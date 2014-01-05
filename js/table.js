@@ -60,22 +60,17 @@
 		data = Data1.list;
 		buildList(dom,self,data);		
 	}
-	function buildRollList(dom,self,data){
+	function makeRolling(dom,self){
 
 		var timer = null,
 			top,
 			length;
 			
-
 		self.css({"position":"absolute"});
 		var lis = self.find("li").clone(true);
 		self.append(lis);
 
-		timer = setInterval(function(){
-			// $.ajax({
-
-			// });
-
+		timer = setInterval(function(){			
 												
 			self.animate({"top":self.position().top-30},600,function(){
 				if((self.position().top) == -self.height()/2){
@@ -83,8 +78,7 @@
 					self.css({"top":0});	
 				}
 			});
-			
-			
+						
 		},1000);
 	}
 
@@ -130,7 +124,7 @@
 		}
 
 		if(opts.rollable){
-			buildRollList(dom,self,data);
+			makeRolling(dom,self,data);
 			opts.rollable = false;
 		}
 	}
