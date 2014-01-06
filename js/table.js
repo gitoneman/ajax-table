@@ -41,7 +41,7 @@
 		for (var i = 0; i < length; i++) {
 			var obj = opts.column[i];
 			arr.push(obj.value);
-			header += "<div style='width:"+ 100/length +"%'>"+obj.name+"</div>";
+			header += "<div class='tlt border' style='width:"+ 100/length +"%'>"+obj.name+"</div>";
 		};
 
 		dom.data("json",arr);		
@@ -54,12 +54,7 @@
 		data = Data.list;
 		buildList(dom,self,data);		
 	}
-	function getData1(dom,self){
-		var data = {},
-		opts = dom.data("opts");
-		data = Data1.list;
-		buildList(dom,self,data);		
-	}
+	
 	function makeRolling(dom,self){
 
 		var timer = null,
@@ -70,16 +65,28 @@
 		var lis = self.find("li").clone(true);
 		self.append(lis);
 
-		timer = setInterval(function(){			
+		// 滚动一
+		
+		// timer = setInterval(function(){			
 												
-			self.animate({"top":self.position().top-30},600,function(){
-				if((self.position().top) == -self.height()/2){
-				// getData1(dom,self);
+		// 	self.animate({"top":self.position().top-30},600,function(){
+		// 		if((self.position().top) == -self.height()/2){
+		// 		// getData1(dom,self);
+		// 			self.css({"top":0});	
+		// 		}
+		// 	});
+						
+		// },1000);
+		// 
+		
+	
+		//滚动二
+		timer = setInterval(function(){	
+			self.css("top",self.position().top-1);
+			if((self.position().top) <= -self.height()/2){				
 					self.css({"top":0});	
 				}
-			});
-						
-		},1000);
+		},30);
 	}
 
 	function initEvent(dom){
@@ -105,7 +112,7 @@
 				if(opts.formats[obj1]){					
 					text = opts.formats[obj1](obj[obj1]);
 				}
-				item += "<span style='width:"+ 100/value.length+"%'>"+text+"</span>"
+				item += "<span class='border' style='width:"+ 100/value.length+"%'>"+text+"</span>"
 			};
 
 			item = $("<li>"+ item + "</li>");

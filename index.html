@@ -9,7 +9,7 @@
 	</style>
 </head>
 <body>
-	<div id="table" class="m-table">
+	<div class="J_Table m-table">
 		<div class="header"></div>
 		<div class="inner-wrap">
 			<ul class="inner"></ul>
@@ -18,6 +18,7 @@
 			111
 		</div>		
 	</div>
+
 	<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/table.js"></script>
 	<script src="js/data.js"></script>
@@ -29,7 +30,7 @@
 			// }
 			// console.log($.extend({},a,{"hello":2}));
 
-			$("#table").my_table({
+			$(".J_Table").my_table({
 				"init":true,
 				"formats":{
 					"sex":function(data){
