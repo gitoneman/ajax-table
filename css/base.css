@@ -25,6 +25,7 @@ img {border: 0;}
 	/*width:500px;*/
 	border:1px solid #ccc;
 }
+
 .m-table .header {
 	height: 40px;
 	width: 100%;
@@ -93,7 +94,9 @@ img {border: 0;}
 .m-table .inner li:hover {
 	background: #fefbec;
 }
-
+.m-table .cross {
+	background: red !important;
+}
 .m-table .inner span {
 	position: relative;
 	display: block;

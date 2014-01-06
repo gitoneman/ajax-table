@@ -33,10 +33,11 @@
 		"limit":10
 	}
 
-	function initHead(dom,self){
+	function initHead(s){
 		var header = "",
 			length = opts.column.length,
-			arr = [];
+			arr = [],
+			self = s.find(".header");
 
 		for (var i = 0; i < length; i++) {
 			var obj = opts.column[i];
@@ -44,18 +45,22 @@
 			header += "<div class='tlt border' style='width:"+ 100/length +"%'>"+obj.name+"</div>";
 		};
 
-		dom.data("json",arr);		
+		s.data("json",arr);		
 		self.append($(header));
 	}	
 
-	function getData(dom,self){
+	function getData(s){
 		var data = {},
-		opts = dom.data("opts");
+		opts = s.data("opts"),
+		self = s.find(".inner");
+
+		// TODO ajaxs
 		data = Data.list;
-		buildList(dom,self,data);		
+
+		buildList(s,self,data);		
 	}
 	
-	function makeRolling(dom,self){
+	function makeRolling(s,self){
 
 		var timer = null,
 			top,
@@ -65,24 +70,35 @@
 		var lis = self.find("li").clone(true);
 		self.append(lis);
 		
-		startRolling(dom);
+		startRolling(s);
 	}
 
-	function initEvent(dom){
+	function initEvent(s){
 
-		dom.find(".J_wrap").hover(function(){
-			clearInterval(dom.timer);
+		s.find(".J_wrap").hover(function(){
+			clearInterval(s.timer);
 		},function(){
-			startRolling(dom);
+			startRolling(s);
 		});
 
+		s.on("TABLE_ADDITEMSUCCESS",function(e,o){			
+			
+			$(o).on("click",function(){
+				var _self = $(this);
+
+				opts.clickHandle(_self);
+			});
+
+			$(o).css("cursor","pointer");	
+		});
+		
 	}
-	function startRolling(dom) {
-		var self = dom.find(".inner");
+	function startRolling(s) {
+		var self = s.find(".inner");
 
 		//滚动一
-		if(dom.opts.rollType == 1){
-			dom.timer = setInterval(function(){	
+		if(s.opts.rollType == 1){
+			s.timer = setInterval(function(){	
 				self.css("top",self.position().top-1);
 				if((self.position().top) <= -self.height()/2){				
 						self.css({"top":0});	
@@ -91,9 +107,9 @@
 		}
 		
 		//滚动二
-		if(dom.opts.rollType == 2){
+		if(s.opts.rollType == 2){
 
-			dom.timer = setInterval(function(){			
+			s.timer = setInterval(function(){			
 												
 				self.animate({"top":self.position().top-30},600,function(){
 					if((self.position().top) == -self.height()/2){
@@ -107,12 +123,42 @@
 					
 	}
 
+	function cross(s){
+		var spans = s.find("span"),
+			reg = /^J_value_/,
+			cls;
 
-	function buildList(dom,self,data){
+		spans.hover(function(){
+			var _self = $(this),
+				li = _self.parent("li"),
+				arr,
+				item;
+
+			arr = _self.attr("class").split(" ");
+
+			for (var i = 0; i < arr.length; i++) {
+
+				if(reg.test(arr[i])){
+					cls = arr[i];
+				}
+			};
+
+			li.addClass("cross");
+			s.find("span."+cls).addClass("cross");
+		},function(){
+			var _self = $(this),
+				li = _self.parent("li");
+
+			li.removeClass("cross");
+			s.find("span."+cls).removeClass("cross");
+		});
+	}
+
+	function buildList(s,self,data){
 
 		var length = data.length,
-			value = dom.data("json"),
-			opts = dom.data("opts"),
+			value = s.data("json"),
+			opts = s.data("opts"),
 			item = "",
 			text = "";
 
@@ -136,15 +182,11 @@
 			item.data("json",obj);
 			item.addClass("J_id_"+obj.id);
 
+			
+			// console.log(item)
 			//可点击所做操作
 			if(opts.clickable){
-				item.on("click",function(){
-					var _self = $(this);
-
-					opts.clickHandle(_self);
-				});
-
-				item.css("cursor","pointer");
+				s.trigger("TABLE_ADDITEMSUCCESS",item);
 			}
 
 			self.append(item);
@@ -159,8 +201,12 @@
 		}
 
 		if(opts.rollable){
-			makeRolling(dom,self,data);
+			makeRolling(s,self,data);
 			opts.rollable = false;
+		}
+
+		if(opts.cross){
+			cross(s);
 		}
 	}
 
@@ -168,17 +214,14 @@
 		init:function(options){
 			
     		return this.each(function(){
-    			var $this = $(this),
-    				$header = $this.find(".header"),
-    				$inner = $this.find(".inner");
-    				
+    			var s = $(this);
+    				   				
+    			s.data("opts",options);
+    			s.opts = options;    			    		   			
 
-    			$this.data("opts",options);
-    			$this.opts = options;
-
-    			initHead($this,$header);
-    			getData($this,$inner);    			
-    			initEvent($this);
+    			initHead(s);    			    			
+    			initEvent(s);
+    			getData(s);
     		})
 		},
 		refresh:function(options){
