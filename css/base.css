@@ -90,6 +90,10 @@ img {border: 0;}
 /*	background: #ccc;
 	color:#333;*/
 }
+.m-table .inner li:hover {
+	background: #fefbec;
+}
+
 .m-table .inner span {
 	position: relative;
 	display: block;
@@ -103,4 +107,9 @@ img {border: 0;}
 	width: 100%;
 	height: 40px;
 	line-height: 40px;
+	background: -webkit-linear-gradient(#f8f8f8,#ebebeb);
+	background:-moz-linear-gradient(#f8f8f8,#ebebeb);
+	background:-ms-linear-gradient(#f8f8f8,#ebebeb);
+	background:-o-linear-gradient(#f8f8f8,#ebebeb);
+	background:linear-gradient(#f8f8f8,#ebebeb);
 }
