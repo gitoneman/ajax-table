@@ -10,12 +10,17 @@
 </head>
 <body>
 	<div class="J_Table m-table">
-		<div class="header"></div>
-		<div class="inner-wrap J_wrap">
-			<ul class="inner"></ul>
-		</div>
-		<div class="pager">
+		<!-- <div style="position:relative;height:40px;">
+			<div class="pager J_pager">
 			pager
+			</div>
+		</div> -->
+		<div class="header J_header"></div>
+		<div class="inner-wrap J_wrap">
+			<ul class="inner J_inner"></ul>
+		</div>
+		<div class="pager J_pager">
+				
 		</div>		
 	</div>
 
@@ -49,9 +54,15 @@
 				},
 				"height":"300px",
 				"overflow":"hidden",
-				"rollable":false,                                                                     
+				"rollable":true,                                                                     
 				"rollType":1,  //1,2可选
-				"cross":false   //交叉选中
+				"cross":false,   //交叉选中
+				"pager":true,
+				"url":"",
+				"param":{
+
+				},
+				"limit":10
 			});
 		});
 				

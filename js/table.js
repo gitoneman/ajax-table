@@ -47,23 +47,89 @@
 
 		s.data("json",arr);		
 		self.append($(header));
+	}
+	function initPager(s){
+		var pager = s.find(".J_pager");
+						
+		var lf = [
+			"<ul class='f-fl lf'>",
+			"<li class='f-fl'>",
+			"pager",
+			"</li>",
+			"</ul>"
+		];
+
+		var rgt = [
+			"<ul class='f-fr rgt'>",
+				"<li class='f-fr'>",
+					"<div class='m-select'>",
+						"<button>",
+							"&lt;&lt;",
+						"</button>",
+						"<button>",
+							"&lt",
+						"</button>",
+						"<button>",
+							"&gt;",
+						"</button>",
+						"<button>",
+							"&gt;&gt;",
+						"</button>",
+					"</div>",
+				"</li>",
+				"<li class='f-fr'>",
+					"<div class='m-input'>",
+						"<input type='text' class='txt'>",
+						"/",
+						"<span>",
+							"22",
+						"</span>",
+						"页",
+					"</div>",
+				"</li>",
+			"</ul>"
+		];
+
+		lf = lf.join("");
+		rgt = rgt.join("");
+		pager.append($(lf)).append($(rgt));
+
 	}	
+
+	function setParam(){
+		
+	}
 
 	function getData(s){
 		var data = {},
 		opts = s.data("opts"),
-		self = s.find(".inner");
+		self = s.find(".J_inner"),
+		url = opts.url,
+		param = opts.param;
 
-		// TODO ajaxs
+		param = encodeURIComponent(param);
+		// TODO ajaxs		
+		
+		// $.ajax({
+		// 	url:"",
+		// 	data:{},
+		// 	type:"get",
+		// 	dataType:"json",
+		// 	success:function(data){
+
+		// 	},
+		// 	error:function(data){
+
+		// 	}
+		// });
 		data = Data.list;
-
 
 		buildList(s,self,data);		
 	}
 
 	//暂无数据显示
 	function showNoData(s){
-		var self = s.find(".inner");
+		var self = s.find(".J_inner");
 
 		self.append("<p class='tip'>暂无数据!</p>");
 	}
@@ -102,7 +168,7 @@
 		
 	}
 	function startRolling(s) {
-		var self = s.find(".inner");
+		var self = s.find(".J_inner");
 
 		//滚动一
 		if(s.opts.rollType == 1){
@@ -154,12 +220,14 @@
 
 			li.addClass("cross");
 			s.find("span."+cls).addClass("cross");
+
 		},function(){
 			var _self = $(this),
 				li = _self.parent("li");
 
 			li.removeClass("cross");
 			s.find("span."+cls).removeClass("cross");
+
 		});
 	}
 
@@ -171,7 +239,7 @@
 			item = "",
 			text = "";
 
-		data = null;
+		// data = null;
 		if(data == null || data == ""){
 			showNoData(s);
 		}else{
@@ -238,6 +306,10 @@
     			initHead(s);    			    			
     			initEvent(s);
     			getData(s);
+
+    			if(options.pager){
+    				initPager(s);
+    			}
     		})
 		},
 		refresh:function(options){

@@ -1,11 +1,12 @@
 @charset "UTF-8";
-html,body,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,header,menu,section,p,input,td,th,footer {padding: 0;margin:0;}
+html,body,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,header,menu,section,p,input,td,th,footer{padding: 0;margin:0;}
 html,body {width: 100%;height: 100%;border: 0;}
-body,select,input,button {font-size: 12px;color: #333;font-family: arial,helvetica,sans-serif;}
+body,select,input,button {font-size: 12px;color: #333;font-family: arial,helvetica,sans-serif;outline: none;}
 ul {list-style: none;}
 a {text-decoration: none;color:#333;}
 input:focus,textarea:focus,span:focus,a:focus {outline: none;}
 img {border: 0;}
+
 
 /*布局类*/
 .g {}
@@ -13,6 +14,12 @@ img {border: 0;}
 /*功能类*/
 .f {}
 
+.f-fl{
+	float: left;
+}
+.f-fr{
+	float: right;
+}
 /*单元类*/
 .u {}
 
@@ -55,18 +62,6 @@ img {border: 0;}
 .m-table .border:last-child:after{
 	border-right:none;
 }
-/*.m-table .header .tlt:after{
-	position: absolute;
-	right: 0;
-	width: 0;
-	height: 100%;
-	content: "";
-	border-right:1px solid #ccc;
-
-}
-.m-table .header .tlt:last-child:after{
-	border-right:none;
-}*/
 
 .m-table .inner-wrap {
 	/*height: 300px;*/
@@ -116,10 +111,46 @@ img {border: 0;}
 	background:-o-linear-gradient(#f8f8f8,#ebebeb);
 	background:linear-gradient(#f8f8f8,#ebebeb);
 }
+.m-table .pager .lf {
+	
+}
+.m-table .pager .lf li{
+	margin-left: 20px;
+}
+.m-table .pager .rgt {
+	
+}
+.m-table .pager .rgt li {
+	margin-right: 20px;
+}
+
 .m-table .tip {
 	padding: 10px 20px;
 	background: #deeefa;
 	color: #136bc5;
 	font-size: 14px;
 	margin: 10px;
+}
+
+/*翻页模块*/
+.m-select {
+
+}
+
+.m-select button {
+	padding: 4px 10px;
+	margin: 0;
+}
+.m-select button:hover{
+	cursor: pointer;
+}
+
+/*选择页面模块*/
+.m-input {
+	
+}
+.m-input .txt {
+	width: 20px;
+	padding: 4px 10px;
+	border: 1px solid #aaa;
 }
