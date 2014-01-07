@@ -116,3 +116,10 @@ img {border: 0;}
 	background:-o-linear-gradient(#f8f8f8,#ebebeb);
 	background:linear-gradient(#f8f8f8,#ebebeb);
 }
+.m-table .tip {
+	padding: 10px 20px;
+	background: #deeefa;
+	color: #136bc5;
+	font-size: 14px;
+	margin: 10px;
+}

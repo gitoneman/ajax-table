@@ -57,7 +57,15 @@
 		// TODO ajaxs
 		data = Data.list;
 
+
 		buildList(s,self,data);		
+	}
+
+	//暂无数据显示
+	function showNoData(s){
+		var self = s.find(".inner");
+
+		self.append("<p class='tip'>暂无数据!</p>");
 	}
 	
 	function makeRolling(s,self){
@@ -163,36 +171,43 @@
 			item = "",
 			text = "";
 
-		//构建每个条目
-		for (var i = 0; i < length; i++) {
-			var obj = data[i];
+		data = null;
+		if(data == null || data == ""){
+			showNoData(s);
+		}else{
+			//构建每个条目
+			for (var i = 0; i < length; i++) {
+				var obj = data[i];
 
-			for (var j = 0; j < value.length; j++) {
-				var obj1 = value[j];
+				for (var j = 0; j < value.length; j++) {
+					var obj1 = value[j];
 
-				text = obj[obj1];
+					text = obj[obj1];
+					
+					if(opts.formats[obj1]){					
+						text = opts.formats[obj1](obj[obj1]);
+					}
+					item += "<span class='border J_value_"+obj1+"' style='width:"+ 100/value.length+"%'>"+text+"</span>"
+				};
+
+				//添加每个li类以及数据
+				item = $("<li>"+ item + "</li>");
+				item.data("json",obj);
+				item.addClass("J_id_"+obj.id);
+
 				
-				if(opts.formats[obj1]){					
-					text = opts.formats[obj1](obj[obj1]);
+				// console.log(item)
+				//可点击所做操作
+				if(opts.clickable){
+					s.trigger("TABLE_ADDITEMSUCCESS",item);
 				}
-				item += "<span class='border J_value_"+obj1+"' style='width:"+ 100/value.length+"%'>"+text+"</span>"
+
+				self.append(item);
+				item = "";
 			};
+		}
 
-			//添加每个li类以及数据
-			item = $("<li>"+ item + "</li>");
-			item.data("json",obj);
-			item.addClass("J_id_"+obj.id);
-
-			
-			// console.log(item)
-			//可点击所做操作
-			if(opts.clickable){
-				s.trigger("TABLE_ADDITEMSUCCESS",item);
-			}
-
-			self.append(item);
-			item = "";
-		};
+		
 
 		if(opts.height){
 			self.parent("div").css({"height":opts.height});
