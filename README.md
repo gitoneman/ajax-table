@@ -2,6 +2,7 @@ ajax-table
 ==========
 基于jquery 的table插件，功能强大。
 
+ ![image](https://github.com/gitoneman/ajax-table/raw/master/img/table.png)
 
 1，可滚动
 
