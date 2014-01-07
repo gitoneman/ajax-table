@@ -128,6 +128,7 @@
 			reg = /^J_value_/,
 			cls;
 
+		//交叉选中
 		spans.hover(function(){
 			var _self = $(this),
 				li = _self.parent("li"),
