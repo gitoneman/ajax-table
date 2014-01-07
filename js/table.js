@@ -1,23 +1,36 @@
 ;(function($){
 	var defaults,
-		opts,
 		methods;
 
+	// 默认设置
 	defaults = {
 		"init":true,
 		"refresh":false,
 		"column":[
 			{
+				name:"id",
+				value:"id",
+				width:"20%"
+			},
+			{
 				name:"name",
 				value:"name",
+				width:"20%"
 			},
 			{
 				name:"age",
 				value:"age",
+				width:"20%"
 			},
 			{
 				name:"sex",
 				value:"sex",
+				width:"20%"
+			},
+			{
+				name:"操作",
+				value:"",
+				width:"20%"
 			}
 		],   			
 		"rollable":false,
@@ -28,26 +41,42 @@
 		"clickHandle":function(){
 			console.log("you did not define a clickHandle")
 		},
-		"height":"",
-		"overflow":"auto",
-		"limit":10
+		"height":"300px",
+		"overflow":"hidden",
+		"rollable":true,                                                                     
+		"rollType":1,  //1,2可选
+		"cross":false,   //交叉选中
+		"pager":true,
+		"url":"",
+		"param":{
+			"limit":10,
+		},
 	}
 
+	// 初始化表格头部
+	
 	function initHead(s){
 		var header = "",
+			opts = s.opts,
 			length = opts.column.length,
 			arr = [],
 			self = s.find(".header");
 
 		for (var i = 0; i < length; i++) {
 			var obj = opts.column[i];
-			arr.push(obj.value);
-			header += "<div class='tlt border' style='width:"+ 100/length +"%'>"+obj.name+"</div>";
+			// arr.push(obj.value);
+			arr.push({
+				"value":obj.value,
+				"width":obj.width
+			});
+			header += "<div class='tlt border' style='width:"+ obj.width +"%'>"+obj.name+"</div>";
 		};
 
-		s.data("json",arr);		
+		s.data("json",arr);
 		self.append($(header));
 	}
+
+	// 初始化翻页模块
 	function initPager(s){
 		var pager = s.find(".J_pager");
 						
@@ -63,25 +92,25 @@
 			"<ul class='f-fr rgt'>",
 				"<li class='f-fr'>",
 					"<div class='m-select'>",
-						"<button>",
+						"<button class='J_first' data-action='first'>",
 							"&lt;&lt;",
 						"</button>",
-						"<button>",
+						"<button class='J_pre' data-action='pre'>",
 							"&lt",
 						"</button>",
-						"<button>",
+						"<button class='J_next' data-action='next'>",
 							"&gt;",
 						"</button>",
-						"<button>",
+						"<button class='J_last' data-action='last'>",
 							"&gt;&gt;",
 						"</button>",
 					"</div>",
 				"</li>",
 				"<li class='f-fr'>",
 					"<div class='m-input'>",
-						"<input type='text' class='txt'>",
+						"<input type='text' class='numb J_number'>",
 						"/",
-						"<span>",
+						"<span class='J_pages'>",
 							"22",
 						"</span>",
 						"页",
@@ -94,25 +123,31 @@
 		rgt = rgt.join("");
 		pager.append($(lf)).append($(rgt));
 
+		s.trigger("TABLE_ADDPAGERSUCCESS",pager);
 	}	
 
 	function setParam(){
 		
 	}
 
+	// 获取数据
 	function getData(s){
 		var data = {},
 		opts = s.data("opts"),
 		self = s.find(".J_inner"),
+		pager = s.find(".J_pager"),
 		url = opts.url,
-		param = opts.param;
+		param = pager.data("param");
 
-		param = encodeURIComponent(param);
+		param = $.extend({},param,opts.param);
+		// param = encodeURIComponent(param);
+		
+
 		// TODO ajaxs		
 		
 		// $.ajax({
-		// 	url:"",
-		// 	data:{},
+		// 	url:url,
+		// 	data:param,
 		// 	type:"get",
 		// 	dataType:"json",
 		// 	success:function(data){
@@ -134,9 +169,11 @@
 		self.append("<p class='tip'>暂无数据!</p>");
 	}
 	
-	function makeRolling(s,self){
+	// 滚动
+	function makeRolling(s){
 
 		var timer = null,
+			self = s.find(".J_inner"),
 			top,
 			length;
 			
@@ -147,6 +184,7 @@
 		startRolling(s);
 	}
 
+	// 初始化事件
 	function initEvent(s){
 
 		s.find(".J_wrap").hover(function(){
@@ -160,13 +198,57 @@
 			$(o).on("click",function(){
 				var _self = $(this);
 
-				opts.clickHandle(_self);
+				s.opts.clickHandle(_self);
 			});
 
 			$(o).css("cursor","pointer");	
 		});
+
+		s.on("TABLE_ADDPAGERSUCCESS",function(e,o){
+
+			var _self = $(o);
+
+			pagerEvent(s,_self);
+		});
 		
 	}
+
+	//翻页模块事件
+	function pagerEvent(s,_self){
+
+		// var first = _self.find(".J_first"),
+		// 	last = _self.find(".J_last"),
+		// 	pre = _self.find(".J_pre"),
+		// 	next = _self.find(".J_next");
+
+		_self.find("button").click(function(){
+			var $this = $(this),
+				action = $(this).data("action"),
+				param = _self.data("param");
+
+			switch(action){
+				case "first":param.start = 0;break;
+				case "pre":alert(action);break;
+				case "next":alert(action);break;
+				case "last":alert(action);break;
+			}
+			getData(s);
+
+		});
+
+		if(_self.data("param") == null || _self.data("param") == undefined){
+
+			_self.data("param",{				
+				"start":0,
+				"pager.offset":0			
+			});
+
+		}
+		
+
+	}
+
+	// 开始滚动
 	function startRolling(s) {
 		var self = s.find(".J_inner");
 
@@ -197,6 +279,7 @@
 					
 	}
 
+	// 交叉选中
 	function cross(s){
 		var spans = s.find("span"),
 			reg = /^J_value_/,
@@ -231,13 +314,19 @@
 		});
 	}
 
+	// 构建列表
 	function buildList(s,self,data){
 
 		var length = data.length,
-			value = s.data("json"),
+			array = s.data("json"),
 			opts = s.data("opts"),
 			item = "",
-			text = "";
+			text = "",
+			wid = "";
+
+		if(opts.pager){
+			self.empty();
+		}
 
 		// data = null;
 		if(data == null || data == ""){
@@ -247,15 +336,28 @@
 			for (var i = 0; i < length; i++) {
 				var obj = data[i];
 
-				for (var j = 0; j < value.length; j++) {
-					var obj1 = value[j];
+				for (var j = 0; j < array.length; j++) {
+					var obj1 = array[j];
 
-					text = obj[obj1];
-					
-					if(opts.formats[obj1]){					
-						text = opts.formats[obj1](obj[obj1]);
+					text = obj[obj1.value];
+
+					//格式化表格数据
+					if(opts.formats[obj1.value]){					
+						text = opts.formats[obj1.value](obj[obj1.value]);
 					}
-					item += "<span class='border J_value_"+obj1+"' style='width:"+ 100/value.length+"%'>"+text+"</span>"
+
+					if(text == undefined){
+						text = "";
+					}
+
+					//设置每个column宽度
+					if(obj1.width){
+						wid = obj1.width;
+					}else{
+						wid = 100/array.length;
+					}					
+
+					item += "<span class='border J_value_"+obj1.value+"' style='width:"+ wid +"%'>"+text+"</span>"
 				};
 
 				//添加每个li类以及数据
@@ -274,26 +376,10 @@
 				item = "";
 			};
 		}
-
-		
-
-		if(opts.height){
-			self.parent("div").css({"height":opts.height});
-		}
-		if(opts.overflow){
-			self.parent("div").css({"overflow":opts.overflow});
-		}
-
-		if(opts.rollable){
-			makeRolling(s,self,data);
-			opts.rollable = false;
-		}
-
-		if(opts.cross){
-			cross(s);
-		}
+								
 	}
 
+	// 方法集
 	methods = {
 		init:function(options){
 			
@@ -305,11 +391,30 @@
 
     			initHead(s);    			    			
     			initEvent(s);
-    			getData(s);
 
-    			if(options.pager){
+    			if(s.opts.pager){
     				initPager(s);
     			}
+
+    			getData(s);
+
+    			if(s.opts.rollable){    				
+					makeRolling(s);
+					// opts.rollable = false;
+				}
+
+				if(s.opts.cross){
+					cross(s);
+				}
+   			
+
+    			if(s.opts.height){
+					s.find(".J_wrap").css({"height":s.opts.height});
+				}
+
+				if(s.opts.overflow){
+					s.find(".J_wrap").css({"overflow":s.opts.overflow});
+				}	
     		})
 		},
 		refresh:function(options){
@@ -321,10 +426,12 @@
     		})
 		}
 	}
+
+	// 插件入口
 	$.fn.extend({ 
     	my_table:function(options){
     		var method = null;
-			opts = $.extend({},defaults,options || {});
+			var opts = $.extend({},defaults,options || {});
 
     		if(opts.refresh){
     			method = methods["refresh"];

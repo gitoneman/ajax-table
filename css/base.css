@@ -26,6 +26,7 @@ img {border: 0;}
 /*组件类*/
 .m {}
 
+/*表格主体*/
 .m-table {
 	position: relative;
 	margin:0 auto;
@@ -149,7 +150,7 @@ img {border: 0;}
 .m-input {
 	
 }
-.m-input .txt {
+.m-input .numb {
 	width: 20px;
 	padding: 4px 10px;
 	border: 1px solid #aaa;

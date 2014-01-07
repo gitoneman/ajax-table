@@ -23,17 +23,22 @@
 				
 		</div>		
 	</div>
+	<div class="J_Table m-table">		
+		<div class="header J_header"></div>
+		<div class="inner-wrap J_wrap">
+			<ul class="inner J_inner"></ul>
+		</div>
+		<div class="pager J_pager">
+				
+		</div>		
+	</div>
+
 
 	<script src="js/jquery-1.9.1.min.js"></script>
 	<script src="js/table.js"></script>
 	<script src="js/data.js"></script>
 	<script>
-		$(function(){
-			// var a = {
-			// 	"hello":1,
-			// 	"hello2":2
-			// }
-			// console.log($.extend({},a,{"hello":2}));
+		$(function(){			
 
 			$(".J_Table").my_table({
 				"init":true,
@@ -50,7 +55,7 @@
 				"clickable":true,
 				"clickHandle":function(dom){
 					var _self = dom;
-					console.log(_self.data("json").id);
+					console.log(_self.data("json").id);					
 				},
 				"height":"300px",
 				"overflow":"hidden",
@@ -60,9 +65,9 @@
 				"pager":true,
 				"url":"",
 				"param":{
-
+					"limit":10,
 				},
-				"limit":10
+				
 			});
 		});
 				
