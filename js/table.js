@@ -139,7 +139,9 @@
 		url = opts.url,
 		param = pager.data("param");
 
-		param = $.extend({},param,opts.param);
+		param  = $.extend({},param,opts.param);
+
+		pager.data("param",param);
 		// param = encodeURIComponent(param);
 		
 
@@ -151,13 +153,17 @@
 		// 	type:"get",
 		// 	dataType:"json",
 		// 	success:function(data){
+				// param.total = data.total;
 
+				// pager.find(".J_pages").text(data.total/param.limit);
+
+				// pager.find(".J_number").val(param.start/param.limit + 1);
 		// 	},
 		// 	error:function(data){
 
 		// 	}
 		// });
-		data = Data.list;
+		data = Data[opts.mlist];
 
 		buildList(s,self,data);		
 	}
@@ -228,10 +234,11 @@
 
 			switch(action){
 				case "first":param.start = 0;break;
-				case "pre":alert(action);break;
-				case "next":alert(action);break;
-				case "last":alert(action);break;
+				case "pre":param.start = param.start - param.limit > 0 ? param.start - param.limit:0;break;
+				case "next":param.start = param.start + param.limit < param.total ? param.start + param.limit:param.total;break;
+				case "last":param.start = param.total - param.limit;break;
 			}
+
 			getData(s);
 
 		});
