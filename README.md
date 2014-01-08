@@ -11,3 +11,8 @@ ajax-table
 
 
 3，可翻页（未完成）
+
+
+4,添加操作条
+![image](https://github.com/gitoneman/ajax-table/raw/master/img/functions.png)
+
