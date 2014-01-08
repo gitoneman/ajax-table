@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>ajax-table</title>
 	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<style>
 		
 	</style>
@@ -52,7 +53,7 @@
 						return data ;
 					}
 				},
-				"clickable":true,
+				"clickable":false,
 				"clickHandle":function(dom){
 					var _self = dom;
 					console.log(_self.data("json").id);					
@@ -60,14 +61,35 @@
 				"mlist":"list",
 				"height":"300px",
 				"overflow":"hidden",
-				"rollable":true,                                                                 
+				"rollable":false,                                                                 
 				"rollType":1,  //1,2可选
 				"cross":false,   //交叉选中
 				"pager":true,
 				"url":"",
 				"param":{
 					"limit":10,
-				},				
+				},
+				"operatable":true,
+				"operations":[
+					{	
+						"ico":"icon-edit",
+						"tit":"编辑",
+						"enable":false,
+						"type":"edit",
+						"url":"",
+						"method":"",
+						"param":"",						
+					},
+					{
+						"ico":"icon-remove",
+						"tit":"移除",
+						"enable":true,
+						"type":"delete",
+						"url":"",
+						"method":"",
+						"param":"",						
+					}
+				]			
 			});
 		});
 				

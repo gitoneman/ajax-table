@@ -29,7 +29,7 @@
 			},
 			{
 				name:"操作",
-				value:"",
+				value:"operation",
 				width:"20%"
 			}
 		],   			
@@ -69,7 +69,7 @@
 				"value":obj.value,
 				"width":obj.width
 			});
-			header += "<div class='tlt border' style='width:"+ obj.width +"%'>"+obj.name+"</div>";
+			header += "<div class='tlt border' style='width:"+ obj.width +"'>"+obj.name+"</div>";
 		};
 
 		s.data("json",arr);
@@ -93,16 +93,20 @@
 				"<li class='f-fr'>",
 					"<div class='m-select'>",
 						"<button class='J_first' data-action='first'>",
-							"&lt;&lt;",
+							"<i class='icon-double-angle-left'>",
+							"</i>",
 						"</button>",
 						"<button class='J_pre' data-action='pre'>",
-							"&lt",
+							"<i class='icon-angle-left'>",
+							"</i>",
 						"</button>",
 						"<button class='J_next' data-action='next'>",
-							"&gt;",
+							"<i class='icon-angle-right'>",
+							"</i>",
 						"</button>",
 						"<button class='J_last' data-action='last'>",
-							"&gt;&gt;",
+							"<i class='icon-double-angle-right'>",
+							"</i>",
 						"</button>",
 					"</div>",
 				"</li>",
@@ -111,7 +115,7 @@
 						"<input type='text' class='numb J_number'>",
 						"/",
 						"<span class='J_pages'>",
-							"22",
+							"",
 						"</span>",
 						"页",
 					"</div>",
@@ -192,6 +196,7 @@
 
 	// 初始化事件
 	function initEvent(s){
+		var opts = s.opts;
 
 		s.find(".J_wrap").hover(function(){
 			clearInterval(s.timer);
@@ -216,7 +221,73 @@
 
 			pagerEvent(s,_self);
 		});
+
+
+		s.on("TABLE_INNERCOMPLETE",function(e,o){
+
+			var _self = $(o);
+
+				
+
+			if(opts.operatable){
+				var operation = _self.find(".J_value_operation");
+				buildOperation(s,operation);				
+			}
+
+		});
+
+		s.on("TABLE_ADDONEFUNC",function(e,o1,o2){
+			
+			var _self = $(o1),
+				parent = _self.parents("li");;
+
+			
+
+			_self.on("click",function(){
+
+				confirm(o2.type);
+
+				//点击功能事件
+				
+				// $.ajax({
+				// 	url:o2.url + parent.attr("dbId"),
+				// 	method:o2.method,
+				// 	data:o2.param,
+				// 	dataType:"json",
+				// 	success:function(data){
+				// 		console.log(data);
+				// 	}
+				// });
+				
+			});
+		});
 		
+	}
+
+	//创建功能区
+	function buildOperation(s,o){
+		var opts = s.opts;
+
+		o.each(function(){
+			var $this = $(this),
+				wrap = $("<div class='m-operation'></div>"),			
+				item = "";
+				
+
+			for (var i = 0; i < opts.operations.length; i++) {
+				var obj = opts.operations[i]
+
+				item = $("<a href='javascript://' title='" + obj.tit + "'><i class='"+ obj.ico +"'></i></a>");
+				wrap.append(item);
+
+				if(obj.enable){
+					s.trigger("TABLE_ADDONEFUNC",[item,obj]);					
+				}
+				
+			};
+			$this.append(wrap);
+		
+		});
 	}
 
 	//翻页模块事件
@@ -235,7 +306,7 @@
 			switch(action){
 				case "first":param.start = 0;break;
 				case "pre":param.start = param.start - param.limit > 0 ? param.start - param.limit:0;break;
-				case "next":param.start = param.start + param.limit < param.total ? param.start + param.limit:param.total;break;
+				case "next":param.start = param.start + param.limit < param.total ? param.start + param.limit:param.start;break;
 				case "last":param.start = param.total - param.limit;break;
 			}
 
@@ -364,12 +435,13 @@
 						wid = 100/array.length;
 					}					
 
-					item += "<span class='border J_value_"+obj1.value+"' style='width:"+ wid +"%'>"+text+"</span>"
+					item += "<span class='border J_value_"+obj1.value+"' style='width:"+ wid +"'>"+text+"</span>"
 				};
 
 				//添加每个li类以及数据
 				item = $("<li>"+ item + "</li>");
 				item.data("json",obj);
+				item.attr("dbId",obj.id);
 				item.addClass("J_id_"+obj.id);
 
 				
@@ -383,6 +455,8 @@
 				item = "";
 			};
 		}
+
+		s.trigger("TABLE_INNERCOMPLETE",self);
 								
 	}
 
