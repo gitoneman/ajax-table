@@ -136,7 +136,7 @@
 
 	// 获取数据
 	function getData(s){
-		var data = {},
+		var data = null,
 		opts = s.data("opts"),
 		self = s.find(".J_inner"),
 		pager = s.find(".J_pager"),
@@ -148,7 +148,6 @@
 		pager.data("param",param);
 		// param = encodeURIComponent(param);
 		
-
 		// TODO ajaxs		
 		
 		// $.ajax({
@@ -156,20 +155,29 @@
 		// 	data:param,
 		// 	type:"get",
 		// 	dataType:"json",
-		// 	success:function(data){
-				// param.total = data.total;
+		// 	success:function(o){
 
-				// pager.find(".J_pages").text(data.total/param.limit);
+		// 		data = o[opts.mlist];			
+		// 		buildList(s,self,data);
+				
+		// 		// param.total = o.total;	
+		// 		pager.total = o.total;
 
-				// pager.find(".J_number").val(param.start/param.limit + 1);
+		// 		pager.data("total",o.total);
+
+		// 		pager.find(".J_pages").text(Math.ceil(o.total/param.limit));
+		// 		
+		// 		pager.find(".J_number").val(Math.ceil(param.start/param.limit) + 1);
 		// 	},
 		// 	error:function(data){
 
 		// 	}
 		// });
-		data = Data[opts.mlist];
-
-		buildList(s,self,data);		
+		// 
+				
+		data = Data && Data[opts.mlist];
+		buildList(s,self,data);
+				
 	}
 
 	//暂无数据显示
@@ -301,13 +309,14 @@
 		_self.find("button").click(function(){
 			var $this = $(this),
 				action = $(this).data("action"),
-				param = _self.data("param");
+				param = _self.data("param"),
+				pages = _self.find(".J_pages").text();
 
 			switch(action){
 				case "first":param.start = 0;break;
 				case "pre":param.start = param.start - param.limit > 0 ? param.start - param.limit:0;break;
-				case "next":param.start = param.start + param.limit < param.total ? param.start + param.limit:param.start;break;
-				case "last":param.start = param.total - param.limit;break;
+				case "next":param.start = param.start + param.limit < _self.data("total") ? param.start + param.limit:param.start;break;
+				case "last":param.start = param.limit*(pages == 0 ? 0:pages - 1);break;
 			}
 
 			getData(s);
@@ -395,7 +404,7 @@
 	// 构建列表
 	function buildList(s,self,data){
 
-		var length = data.length,
+		var length = data && data.length,
 			array = s.data("json"),
 			opts = s.data("opts"),
 			item = "",
@@ -407,7 +416,8 @@
 		}
 
 		// data = null;
-		if(data == null || data == ""){
+		if(data == null || data == "" || data == {}){
+			console.log(data)
 			showNoData(s);
 		}else{
 			//构建每个条目
