@@ -46,14 +46,14 @@
 				"formats":{
 					"sex":function(data){
 						if(data == "male"){
-							data = "男";
+							data = "male";
 						}else{
-							data = "女";
+							data = "female";
 						}
 						return data ;
 					}
 				},
-				"clickable":false,
+				"clickable":true,
 				"clickHandle":function(dom){
 					var _self = dom;
 					console.log(_self.data("json").id);					
@@ -81,10 +81,28 @@
 						"param":"",					
 					},
 					{
-						"ico":"icon-remove",
+						"ico":"icon-trash",
 						"tit":"移除",
 						"enable":true,
 						"type":"delete",
+						"url":"",
+						"method":"",
+						"param":"",						
+					},
+					{
+						"ico":"icon-download-alt",
+						"tit":"下载",
+						"enable":true,
+						"type":"download",
+						"url":"",
+						"method":"",
+						"param":"",						
+					},
+					{
+						"ico":"icon-check",
+						"tit":"可用",
+						"enable":true,
+						"type":"choose",
 						"url":"",
 						"method":"",
 						"param":"",						

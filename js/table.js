@@ -47,10 +47,50 @@
 		"rollType":1,  //1,2可选
 		"cross":false,   //交叉选中
 		"pager":true,
+		"chooseLimit":true,
 		"url":"",
 		"param":{
 			"limit":10,
 		},
+		"operatable":true,
+		"operations":[
+			{	
+				"ico":"icon-edit",
+				"tit":"编辑",
+				"enable":false,
+				"type":"edit",
+				"url":"",
+				"method":"",
+				"param":"",					
+			},
+			{
+				"ico":"icon-trash",
+				"tit":"移除",
+				"enable":true,
+				"type":"delete",
+				"url":"",
+				"method":"",
+				"param":"",						
+			},
+			{
+				"ico":"icon-download-alt",
+				"tit":"下载",
+				"enable":true,
+				"type":"download",
+				"url":"",
+				"method":"",
+				"param":"",						
+			},
+			{
+				"ico":"icon-check",
+				"tit":"可用",
+				"enable":true,
+				"type":"choose",
+				"url":"",
+				"method":"",
+				"param":"",						
+			}
+		]			
 	}
 
 	// 初始化表格头部
@@ -78,7 +118,8 @@
 
 	// 初始化翻页模块
 	function initPager(s){
-		var pager = s.find(".J_pager");
+		var pager = s.find(".J_pager"),
+			opts = s.opts;
 						
 		var lf = [
 			"<ul class='f-fl lf'>",
@@ -123,9 +164,36 @@
 			"</ul>"
 		];
 
-		lf = lf.join("");
-		rgt = rgt.join("");
-		pager.append($(lf)).append($(rgt));
+		lf = $(lf.join(""));
+		rgt = $(rgt.join(""));
+
+		if(opts.chooseLimit){
+			var str = [
+					"<li class='f-fl'>",
+						"<select class='J_select'>",
+							"<option value='5'>",
+								"5",
+							"</option>",
+							"<option value='10' selected>",
+								"10",
+							"</option>",
+							"<option value='20'>",
+								"20",
+							"</option>",
+							"<option value='50'>",
+								"50",
+							"</option>",
+							"<option value='100'>",
+								"100",
+							"</option>",
+						"</select>",
+					"</li>"
+				];
+
+			rgt.append($(str.join("")));
+		}
+
+		pager.append(lf).append(rgt);
 
 		s.trigger("TABLE_ADDPAGERSUCCESS",pager);
 	}	
@@ -235,8 +303,7 @@
 
 			var _self = $(o);
 
-				
-
+			
 			if(opts.operatable){
 				var operation = _self.find(".J_value_operation");
 				buildOperation(s,operation);				
@@ -246,14 +313,24 @@
 
 		s.on("TABLE_ADDONEFUNC",function(e,o1,o2){
 			
-			var _self = $(o1),
-				parent = _self.parents("li");;
+			var _self = $(o1);
+				
 
 			
-
 			_self.on("click",function(){
 
-				confirm(o2.type);
+				// confirm(o2.type);
+				// 
+				// 
+				if(!o2.enable){
+					return false;
+				}
+
+				var $this = $(this),
+					parent = $this.parents("li");
+
+				alert(parent.attr("dbId"));
+				return false;
 
 				//点击功能事件
 				
@@ -288,9 +365,9 @@
 				item = $("<a href='javascript://' title='" + obj.tit + "'><i class='"+ obj.ico +"'></i></a>");
 				wrap.append(item);
 
-				if(obj.enable){
-					s.trigger("TABLE_ADDONEFUNC",[item,obj]);					
-				}
+				
+				s.trigger("TABLE_ADDONEFUNC",[item,obj]);					
+				
 				
 			};
 			$this.append(wrap);
@@ -322,6 +399,15 @@
 			getData(s);
 
 		});
+
+		_self.find(".J_select").bind("change",function(){
+
+			var param = _self.data("param");
+
+			param.limit = $(this).val();
+			getData(s);
+		});
+
 
 		if(_self.data("param") == null || _self.data("param") == undefined){
 
