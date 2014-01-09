@@ -584,7 +584,6 @@
 					cross(s);
 				}
    			
-
     			if(s.opts.height){
 					s.find(".J_wrap").css({"height":s.opts.height});
 				}
