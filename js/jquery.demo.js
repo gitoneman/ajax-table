@@ -7,6 +7,11 @@
 		"refresh":false,
 		"column":[
 			{
+				name:"状态",
+				value:"status",
+				width:"10%"
+			},
+			{
 				name:"id",
 				value:"id",
 				width:"20%"
@@ -14,16 +19,11 @@
 			{
 				name:"name",
 				value:"name",
-				width:"20%"
+				width:"30%"
 			},
 			{
 				name:"age",
 				value:"age",
-				width:"20%"
-			},
-			{
-				name:"sex",
-				value:"sex",
 				width:"20%"
 			},
 			{
@@ -89,7 +89,8 @@
 				"method":"",
 				"param":"",						
 			}
-		]			
+		],
+		"status":true			
 	}
 	
 	$.extend(O.prototype,{
@@ -97,9 +98,10 @@
 			var w = this;
 
 			var data = o[0];
+
 			w.el = data.el;		
 			w.opt = $.extend({}, O.opt, data.opt);
-			console.log(w.el)
+			
 			w.header = w.el.find(".J_header");
 			w.wrap = w.el.find(".J_wrap");
 			w.inner = w.el.find(".J_inner");
@@ -484,14 +486,14 @@
 			
 			w.startRolling();
 		},
-		pagerEvent:function (_self) {
+		pagerEvent:function () {
 			var w = this;
 
-			_self.find("button").click(function(){
+			w.pager.find("button").click(function(){
 				var $this = $(this),
 					action = $(this).data("action"),
-					param = _self.data("param"),
-					pages = _self.find(".J_pages").text();
+					param = w.pager.data("param"),
+					pages = w.pager.find(".J_pages").text();
 
 				switch(action){
 					case "first":param.start = 0;break;
@@ -504,18 +506,18 @@
 
 			});
 
-			_self.find(".J_select").bind("change",function(){
+			w.pager.find(".J_select").bind("change",function(){
 
-				var param = _self.data("param");
+				var param = w.pager.data("param");
 
 				param.limit = $(this).val();
 				w.getData();
 			});
 
 
-			if(_self.data("param") == null || _self.data("param") == undefined){
+			if(w.pager.data("param") == null || w.pager.data("param") == undefined){
 
-				_self.data("param",{				
+				w.pager.data("param",{				
 					"start":0,
 					"pager.offset":0			
 				});
@@ -571,7 +573,7 @@
 				el: $(this),
 				opt: opt
 			});
-            console.log(t)
+            
 			$(this).data('my_table', t);
 
 		});
