@@ -91,19 +91,19 @@
 			}
 		]			
 	}
-
-	O.prototype = {
+	
+	$.extend(O.prototype,{
 		init: function(o){
 			var w = this;
 
 			var data = o[0];
 			w.el = data.el;		
 			w.opt = $.extend({}, O.opt, data.opt);
-			
-			w.header = $(".J_header");
-			w.wrap = $(".J_wrap");
-			w.inner = $(".J_inner");
-			w.pager = $(".J_pager");			
+			console.log(w.el)
+			w.header = w.el.find(".J_header");
+			w.wrap = w.el.find(".J_wrap");
+			w.inner = w.el.find(".J_inner");
+			w.pager = w.el.find(".J_pager");			
 
 			w.initHead();
 			w.initEvent();
@@ -279,17 +279,17 @@
 			// 	dataType:"json",
 			// 	success:function(o){
 
-			// 		data = o[opts.mlist];			
-			// 		buildList(s,self,data);
+			// 		data = o[w.opt.mlist];			
+			// 		buildList(data);
 					
 			// 		// param.total = o.total;	
-			// 		pager.total = o.total;
+			// 		w.pager.total = o.total;
 
-			// 		pager.data("total",o.total);
+			// 		w.pager.data("total",o.total);
 
-			// 		pager.find(".J_pages").text(Math.ceil(o.total/param.limit));
+			// 		w.pager.find(".J_pages").text(Math.ceil(o.total/param.limit));
 			// 		
-			// 		pager.find(".J_number").val(Math.ceil(param.start/param.limit) + 1);
+			// 		w.pager.find(".J_number").val(Math.ceil(param.start/param.limit) + 1);
 			// 	},
 			// 	error:function(data){
 
@@ -352,7 +352,6 @@
 			w.el.on("TABLE_INNERCOMPLETE",function(e,o){
 
 				var _self = $(o);
-
 				
 				if(w.opt.operatable){
 					var operation = _self.find(".J_value_operation");
@@ -560,18 +559,19 @@
 			}
 					
 		},						
-	}
+	})
 
+	
 
 	$.fn.my_table = function(opt){
 
 		return this.each(function(){
-			
+
 			var t = new O({
 				el: $(this),
 				opt: opt
-			});		
-
+			});
+            console.log(t)
 			$(this).data('my_table', t);
 
 		});
