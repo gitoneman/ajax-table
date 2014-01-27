@@ -101,6 +101,7 @@
 
 			w.el = data.el;		
 			w.opt = $.extend({}, O.opt, data.opt);
+			w.refreshFlag = false;
 			
 			w.header = w.el.find(".J_header");
 			w.wrap = w.el.find(".J_wrap");
@@ -109,17 +110,21 @@
 
 			w.initHead();
 			w.initEvent();
+			
+
+			if(w.opt.rollable){    				
+				w.makeRolling();
+				// opts.rollable = false;
+				w.rollFlag = true;
+			}
+
 			w.getData();
 
 			if(w.opt.pager){
 				w.initPager();
 			}
 			
-			if(w.opt.rollable){    				
-				w.makeRolling();
-				// opts.rollable = false;
-			}
-
+			
 			if(w.opt.cross){
 				w.cross();
 			}
@@ -146,6 +151,7 @@
 				w.inner.empty();
 			}
 
+			w.inner.find("li.new").removeClass("new").addClass("old");
 			// data = null;
 			if(data == null || data == "" || data == {}){
 				
@@ -183,9 +189,9 @@
 					item = $("<li>"+ item + "</li>");
 					item.data("json",obj);
 					item.attr("dbId",obj.id);
+					item.addClass("new");
 					item.addClass("J_id_"+obj.id);
 
-					
 					// console.log(item)
 					//可点击所做操作
 					if(opts.clickable){
@@ -196,7 +202,7 @@
 					item = "";
 				};
 			}
-
+			
 			w.el.trigger("TABLE_INNERCOMPLETE",w.inner);
 		},
 		buildOperation:function (o) {
@@ -298,9 +304,10 @@
 			// 	}
 			// });
 			// 
-					
+			
 			data = Data && Data[w.opt.mlist];
 			w.buildList(data);
+
 		},
 		initHead:function(){
 			var w = this,
@@ -326,8 +333,14 @@
 			var w = this;
 			
 			w.wrap.hover(function(){
+				if(w.inner.find("li").length < 10){
+					return;
+				}
 				clearInterval(w.el.timer);
 			},function(){
+				if(w.inner.find("li").length < 10){
+					return;
+				}
 				w.startRolling();
 			});
 
@@ -358,6 +371,27 @@
 				if(w.opt.operatable){
 					var operation = _self.find(".J_value_operation");
 					w.buildOperation(operation);				
+				}
+
+				w.refreshFlag = true;
+
+				if(_self.find("li.new").length < 10){
+					clearInterval(w.el.timer)
+					w.rollFlag = false;
+
+					_self.find("li.old").remove();
+
+					if(_self.find("li.new").length == 0){
+						w.inner.html("<p class='tip'>暂无数据</p>")
+					}else{
+						w.inner.html(w.inner.find("li.new"))
+
+					}
+				}else{
+					if(w.rollFlag == false){
+						w.makeRolling();
+						w.rollFlag = true;
+					}
 				}
 
 			});
@@ -481,9 +515,10 @@
 			var w = this;							
 			
 			w.inner.css({"position":"absolute"});
-			var lis = w.inner.find("li").clone(true);
-			w.inner.append(lis);
+			// var lis = w.inner.find("li").clone(true);
+			// w.inner.append(lis);
 			
+			w.inner.find(".tip").hide();
 			w.startRolling();
 		},
 		pagerEvent:function () {
@@ -524,12 +559,17 @@
 
 			}
 		},
-		refresh:function(){},
-		setParam:function () {},		
+		refresh:function(){
+			w.getData();
+		},
+		setParam:function (o) {
+			w.opt = $.extend({},w.opt,o);
+		},		
 		showNoData:function () {
 			var w = this;
 			
-			w.inner.append("<p class='tip'>暂无数据!</p>");
+			w.inner.css("top",0);
+			w.inner.html("<p class='tip'>暂无数据!</p>");
 		},		
 		startRolling:function () {
 			var w = this;
@@ -538,11 +578,25 @@
 			//滚动一
 			if(w.opt.rollType == 1){
 				w.el.timer = setInterval(function(){	
-					w.inner.css("top",w.inner.position().top-1);
-					if((w.inner.position().top) <= -w.inner.height()/2){				
+
+					if(w.refreshFlag){
+						var lis = w.inner.find("li.new").clone(true);
+						w.inner.append(lis).find(".old").remove;
+						w.refreshFlag = false;
+
+					}
+					// w.inner.css("top",w.inner.position().top-1);
+
+					// if((w.inner.position().top) <= -w.inner.height()/2){				
+					// 	w.inner.css({"top":0});	
+					// }
+
+					w.inner.animate({"top":"-=0.9"},0,function(){
+						if((w.inner.position().top) <= -w.inner.height()/2){				
 							w.inner.css({"top":0});	
 						}
-				},30);
+					})
+				},40);
 			}
 			
 			//滚动二
@@ -569,13 +623,18 @@
 
 		return this.each(function(){
 
-			var t = new O({
-				el: $(this),
-				opt: opt
-			});
-            
-			$(this).data('my_table', t);
-
+			//已经存在时刷新
+			if($(this).data('my_table')){
+				$(this).data('my_table').refresh();
+			}else{
+				// 第一次执行时创建
+				var t = new O({
+					el: $(this),
+					opt: opt
+				});
+	            
+				$(this).data('my_table', t);
+			}
 		});
 		
 	};
